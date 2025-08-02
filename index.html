@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Color Tab App</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png?v=2">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png?v=2">
+  <link rel="manifest" href="/site.webmanifest?v=2">
+  <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
   <script defer src="/chroma.min.js" onerror="console.error('Chroma.js CDN failed, loaded local fallback')"></script>
   <style>
@@ -62,9 +62,6 @@
       if (target) {
         target.classList.add('active');
         console.log(`Tab ${tabId} set to active`);
-        if (tabId === 'gallery') {
-          renderGradientGallery();
-        }
       } else {
         console.error(`Tab not found: ${tabId}`);
       }
@@ -429,7 +426,8 @@
 </script>
 
 
-<!-- Tab 4: Gradient Gallery -->
+
+  <!-- Tab 4: Gradient Gallery -->
   <div id="gallery" class="tab">
     <h2>Gradient Gallery</h2>
     <p class="help-text">
@@ -523,6 +521,7 @@
         console.log('Tab 4: renderGradientGallery completed');
       }
 
+      // Render on tab activation
       document.getElementById('gallery').addEventListener('click', () => {
         console.log('Tab 4: Gallery tab clicked');
         if (document.getElementById('gallery').classList.contains('active')) {
@@ -530,6 +529,7 @@
         }
       });
 
+      // Render if tab is active on page load
       document.addEventListener('DOMContentLoaded', () => {
         console.log('Tab 4: DOMContentLoaded fired');
         if (document.getElementById('gallery').classList.contains('active')) {
@@ -538,6 +538,8 @@
       });
     </script>
   </div>
+
+  
   
 
   <!-- Tab 5: Copilot Color Questions -->
