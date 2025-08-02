@@ -3,21 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <title>Color Tab App</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
-  .nav button { margin: 5px; padding: 10px 15px; cursor: pointer; }
-  .tab { display: none; padding: 20px; background: white; border: 1px solid #ccc; border-radius: 8px; }
-  .tab.active { display: block; }
-  .swatch { width: 100px; height: 100px; margin: 10px; display: inline-block; border: 1px solid #333; }
-  .input-container { margin-bottom: 15px; }
-  .help-text { font-size: 0.9em; color: #5a5a5a; }
-</style>
+ <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+    }
+    .nav button {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .tab {
+      display: none;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .tab.active {
+      display: block;
+    }
+    .swatch {
+      width: 100px;
+      height: 100px;
+      margin: 10px;
+      display: inline-block;
+      border: 1px solid #333;
+    }
+    .input-container {
+      margin-bottom: 15px;
+    }
+    .help-text {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+  <script>
+    // Shared customMaps for Tabs 3 and 4
+    const customMaps = {
+      viridis: ['#440154', '#482475', '#3f4a8a', '#31688e', '#26828e', '#1f9e89', '#35b779', '#6ece58', '#b5de2b', '#fde725'],
+      plasma: ['#0d0887', '#3e049c', '#6300a7', '#8707a6', '#a31895', '#bf2979', '#d8465b', '#eb6a38', '#f7931a', '#f9cb35'],
+      magma: ['#000004', '#160b39', '#3a0c63', '#63197f', '#8a2482', '#b02978', '#d24163', '#ed694b', '#f9943a', '#fcbf49'],
+      cividis: ['#00224e', '#003971', '#1a4e7e', '#37607d', '#55707c', '#72807c', '#8f9082', '#ada38c', '#ccbf9f', '#ede2b4'],
+      YlGnBu: ['#ffffd9', '#edf8b1', '#c7e9b4', '#7fcdbb', '#41b6c4', '#1d91c0', '#225ea8', '#253494', '#081d58', '#0c2c84'],
+      BuGn: ['#f7fcfd', '#e0f3db', '#ccebc5', '#a8ddb5', '#7bccc4', '#4eb3d3', '#2b8cbe', '#0868ac', '#084081', '#08589e'],
+      Spectral: ['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']
+    };
 
+    function showTab(tabId) {
+      console.log(`Showing tab: ${tabId}`);
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      const target = document.getElementById(tabId);
+      if (target) {
+        target.classList.add('active');
+      } else {
+        console.error(`Tab not found: ${tabId}`);
+      }
+    }
+  </script>
 </head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
-
 <body>
+
 
   <h1>🎨 Color Tools App</h1>
 
@@ -26,9 +80,8 @@
   <button onclick="showTab('converter')">RGBA ↔ HEX Converter</button>
   <button onclick="showTab('palette')">Palette Viewer</button>
   <button onclick="showTab('gallery')">Gradient Gallery</button>
+  <button onclick="showTab('copilot')">Copilot</button>
 </div>
-
-
 
 <!-- Tab 1: Swatch -->
 <div id="swatch" class="tab active">
@@ -189,146 +242,425 @@
 <!-- Tab 3: Palette Generation -->
 <div id="palette" class="tab">
   <h2>Palette Generation of N Colours</h2>
-
   <div class="input-container">
     <label for="colorCount">Number of colors:</label>
     <input type="number" id="colorCount" min="1" max="20" value="10" placeholder="e.g. 10">
-
- <label for="colormapChoice">Choose a colormap:</label>
-<select id="colormapChoice" onchange="updateGradientPreview()">
-  <optgroup label="Chroma Native">
-    <option value="cividis">Cividis</option>
-    <option value="magma">Magma</option>
-    <option value="plasma">Plasma</option>
-    <option value="viridis">Viridis</option>
-  </optgroup>
-  <optgroup label="Custom Presets">
-    <option value="BuGn">BuGn</option>
-    <option value="Spectral">Spectral</option>
-    <option value="YlGnBu">YlGnBu</option>
-  </optgroup>
-</select>
-
-
+    <label for="colormapChoice">Choose a colormap:</label>
+    <select id="colormapChoice" onchange="updateGradientPreview()">
+      <optgroup label="Sequential">
+        <option value="viridis">Viridis</option>
+        <option value="plasma">Plasma</option>
+        <option value="magma">Magma</option>
+        <option value="cividis">Cividis</option>
+        <option value="YlGnBu">YlGnBu</option>
+        <option value="BuGn">BuGn</option>
+      </optgroup>
+      <optgroup label="Diverging">
+        <option value="Spectral">Spectral</option>
+      </optgroup>
+    </select>
     <button onclick="generatePalette()">Generate Palette</button>
   </div>
-
   <p class="help-text">
-    Generates a palette based on selected colormap and color count. HEX codes and rounded RGB values are shown below.
+    Generates a palette of 1 to 20 colors based on the selected colormap. HEX codes, rounded RGB values, and lists for Python are displayed below.
   </p>
-
   <div id="paletteSwatches" style="display: flex; flex-wrap: wrap;"></div>
-
   <h3>Colormap Gradient Previews</h3>
   <div id="colormapPreviews" style="margin-top: 20px;"></div>
-  
+  <h3>Python-Compatible Lists</h3>
+  <div id="paletteLists" style="margin-top: 20px; font-family: monospace;"></div>
+  <div id="errorMessage" style="color: red; margin-top: 10px; display: none;"></div>
 </div>
 
+<style>
+  .swatch {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 10px;
+  }
+  .gradient-preview {
+    width: 200px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px 0;
+  }
+  .input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  #paletteLists {
+    white-space: pre-wrap;
+    font-size: 0.9em;
+  }
+</style>
+
 <script>
+  // Define customMaps 
+  const customMaps = {
+    viridis: ['#440154', '#482475', '#3f4a8a', '#31688e', '#26828e', '#1f9e89', '#35b779', '#6ece58', '#b5de2b', '#fde725'],
+    plasma: ['#0d0887', '#3e049c', '#6300a7', '#8707a6', '#a31895', '#bf2979', '#d8465b', '#eb6a38', '#f7931a', '#f9cb35'],
+    magma: ['#000004', '#160b39', '#3a0c63', '#63197f', '#8a2482', '#b02978', '#d24163', '#ed694b', '#f9943a', '#fcbf49'],
+    cividis: ['#00224e', '#003971', '#1a4e7e', '#37607d', '#55707c', '#72807c', '#8f9082', '#ada38c', '#ccbf9f', '#ede2b4'],
+    YlGnBu: ['#ffffd9', '#edf8b1', '#c7e9b4', '#7fcdbb', '#41b6c4', '#1d91c0', '#225ea8', '#253494', '#081d58', '#0c2c84'],
+    BuGn: ['#f7fcfd', '#e0f3db', '#ccebc5', '#a8ddb5', '#7bccc4', '#4eb3d3', '#2b8cbe', '#0868ac', '#084081', '#08589e'],
+    Spectral: ['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']
+  };
+
   function generatePalette() {
-    const count = parseInt(document.getElementById("colorCount").value, 10);
-    const mapName = document.getElementById("colormapChoice").value;
-    const swatchArea = document.getElementById("paletteSwatches");
-    swatchArea.innerHTML = "";
+    const count = parseInt(document.getElementById('colorCount').value, 10);
+    const mapName = document.getElementById('colormapChoice').value;
+    const swatchArea = document.getElementById('paletteSwatches');
+    const previewArea = document.getElementById('colormapPreviews');
+    const listArea = document.getElementById('paletteLists');
+    const errorMessage = document.getElementById('errorMessage');
+    swatchArea.innerHTML = '';
+    previewArea.innerHTML = '';
+    listArea.innerHTML = '';
+    errorMessage.style.display = 'none';
 
-    const customMaps = {
-      YlGnBu: ['#ffffd9', '#edf8b1', '#c7e9b4', '#7fcdbb', '#41b6c4', '#1d91c0', '#225ea8', '#0c2c84'],
-      BuGn: ['#f7fcfd', '#e0f3db', '#ccebc5', '#a8ddb5', '#7bccc4', '#4eb3d3', '#2b8cbe', '#08589e'],
-      Spectral: ['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']
-    };
-
-    let colorScale;
-
-    if (customMaps[mapName]) {
-      colorScale = chroma.scale(customMaps[mapName]).mode('lab').colors(count);
-    } else {
-      try {
-        colorScale = chroma.scale(mapName).mode('lab').colors(count);
-      } catch {
-        swatchArea.innerHTML = `<p style="color: red;">Unsupported colormap: ${mapName}</p>`;
-        return;
-      }
+    if (isNaN(count) || count < 1 || count > 20) {
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = 'Please enter a number between 1 and 20.';
+      return;
     }
 
-    colorScale.forEach(hex => {
-      const rgba = chroma(hex).rgba();
-      const displayRGBA = `rgba(${rgba.map((v, i) => i < 3 ? Math.round(v) : v.toFixed(2)).join(', ')})`;
+    if (!customMaps[mapName]) {
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = `Invalid colormap: ${mapName}`;
+      return;
+    }
 
-      const wrapper = document.createElement("div");
-      wrapper.style.margin = "10px";
-      wrapper.style.textAlign = "center";
+    let scale;
+    try {
+      scale = chroma.scale(customMaps[mapName]).mode('lab').colors(count);
+    } catch (error) {
+      console.error(`Error generating palette for ${mapName}:`, error);
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = `Failed to generate palette for ${mapName}.`;
+      return;
+    }
 
-      const swatch = document.createElement("div");
-      swatch.className = "swatch";
+    // Generate swatches
+    const hexList = [];
+    const rgbaList = [];
+    scale.forEach(hex => {
+      const rgb = chroma(hex).rgba();
+      const roundedRGB = `rgba(${rgb.map((v, i) => i < 3 ? Math.round(v) : v.toFixed(2)).join(', ')})`;
+      hexList.push(`'${hex}'`);
+      rgbaList.push(`(${rgb.map((v, i) => i < 3 ? Math.round(v) : v.toFixed(2)).join(', ')})`);
+
+      const wrapper = document.createElement('div');
+      wrapper.style.margin = '10px';
+      wrapper.style.textAlign = 'center';
+
+      const swatch = document.createElement('div');
+      swatch.className = 'swatch';
       swatch.style.backgroundColor = hex;
       wrapper.appendChild(swatch);
 
-      const label = document.createElement("div");
-      label.style.fontSize = "0.9em";
-      label.style.marginTop = "5px";
-      label.innerText = `${hex} / ${displayRGBA}`;
+      const label = document.createElement('div');
+      label.style.fontSize = '0.9em';
+      label.style.marginTop = '5px';
+      label.innerText = `${hex} / ${roundedRGB}`;
       wrapper.appendChild(label);
 
       swatchArea.appendChild(wrapper);
     });
+
+    // Generate gradient preview
+    const previewColors = chroma.scale(customMaps[mapName]).mode('lab').colors(20);
+    const gradientDiv = document.createElement('div');
+    gradientDiv.className = 'gradient-preview';
+    gradientDiv.style.background = `linear-gradient(to right, ${previewColors.join(', ')})`;
+    previewArea.appendChild(gradientDiv);
+
+    const previewLabel = document.createElement('div');
+    previewLabel.style.fontSize = '0.9em';
+    previewLabel.style.marginTop = '5px';
+    previewLabel.innerText = `${mapName} Preview`;
+    previewArea.appendChild(previewLabel);
+
+    // Generate Python-compatible lists
+    listArea.innerHTML = `HEX colors = [${hexList.join(', ')}]\nRGBA colors = [${rgbaList.join(', ')}]`;
   }
+
+  function updateGradientPreview() {
+    const mapName = document.getElementById('colormapChoice').value;
+    const previewArea = document.getElementById('colormapPreviews');
+    const errorMessage = document.getElementById('errorMessage');
+    previewArea.innerHTML = '';
+    errorMessage.style.display = 'none';
+
+    if (!customMaps[mapName]) {
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = `Invalid colormap: ${mapName}`;
+      return;
+    }
+
+    let colors;
+    try {
+      colors = chroma.scale(customMaps[mapName]).mode('lab').colors(20);
+    } catch (error) {
+      console.error(`Error generating preview for ${mapName}:`, error);
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = `Unable to generate preview for ${mapName}`;
+      return;
+    }
+
+    const gradientDiv = document.createElement('div');
+    gradientDiv.className = 'gradient-preview';
+    gradientDiv.style.background = `linear-gradient(to right, ${colors.join(', ')})`;
+    previewArea.appendChild(gradientDiv);
+
+    const label = document.createElement('div');
+    label.style.fontSize = '0.9em';
+    label.style.marginTop = '5px';
+    label.innerText = `${mapName} Preview`;
+    previewArea.appendChild(label);
+  }
+
+  document.addEventListener('DOMContentLoaded', updateGradientPreview);
 </script>
-
-
 
   
-<!-- Tab 4: Static Gradient Gallery -->
+<!-- Tab 4: Gradient Gallery -->
 <div id="gallery" class="tab">
-  <h2>Static Gradient Gallery</h2>
+  <h2>Gradient Gallery</h2>
   <p class="help-text">
-    This gallery shows color gradients for various colormaps. Each bar displays 256 colors interpolated across its range.
+    Smooth gradients for all colormaps, interpolated to match Matplotlib’s visualization.
   </p>
-  <div id="gradientGallery" style="margin-top: 20px;"></div>
+  <div id="gradientGallery" style="margin-top: 20px; min-height: 200px;"></div>
+  <div id="errorMessage" style="color: red; margin-top: 10px; display: none;"></div>
 </div>
 
+<style>
+  .gradient-bar {
+    width: 100%;
+    max-width: 600px;
+    height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background: transparent;
+    display: block;
+  }
+  .gradient-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1em;
+    text-transform: capitalize;
+  }
+  #gradientGallery {
+    min-height: 200px;
+    background: transparent;
+  }
+  @media (max-width: 600px) {
+    .gradient-bar {
+      max-width: 100%;
+    }
+  }
+</style>
+
 <script>
-  document.addEventListener("DOMContentLoaded", renderGradientGallery);
+  // Same customMaps as Tab 3
+  const customMaps = {
+    viridis: ['#440154', '#482475', '#3f4a8a', '#31688e', '#26828e', '#1f9e89', '#35b779', '#6ece58', '#b5de2b', '#fde725'],
+    plasma: ['#0d0887', '#3e049c', '#6300a7', '#8707a6', '#a31895', '#bf2979', '#d8465b', '#eb6a38', '#f7931a', '#f9cb35'],
+    magma: ['#000004', '#160b39', '#3a0c63', '#63197f', '#8a2482', '#b02978', '#d24163', '#ed694b', '#f9943a', '#fcbf49'],
+    cividis: ['#00224e', '#003971', '#1a4e7e', '#37607d', '#55707c', '#72807c', '#8f9082', '#ada38c', '#ccbf9f', '#ede2b4'],
+    YlGnBu: ['#ffffd9', '#edf8b1', '#c7e9b4', '#7fcdbb', '#41b6c4', '#1d91c0', '#225ea8', '#253494', '#081d58', '#0c2c84'],
+    BuGn: ['#f7fcfd', '#e0f3db', '#ccebc5', '#a8ddb5', '#7bccc4', '#4eb3d3', '#2b8cbe', '#0868ac', '#084081', '#08589e'],
+    Spectral: ['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Tab 4: DOMContentLoaded fired');
+    renderGradientGallery();
+  });
 
   function renderGradientGallery() {
-    const container = document.getElementById("gradientGallery");
-    container.innerHTML = "";
+    console.log('Tab 4: Starting renderGradientGallery');
+    const container = document.getElementById('gradientGallery');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    if (!container) {
+      console.error('Tab 4: #gradientGallery not found');
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = 'Error: Gradient container not found.';
+      return;
+    }
 
-    const colormaps = {
-      viridis: chroma.scale('viridis').mode('lab').colors(256),
-      plasma: chroma.scale('plasma').mode('lab').colors(256),
-      magma: chroma.scale('magma').mode('lab').colors(256),
-      cividis: chroma.scale('cividis').mode('lab').colors(256),
-      YlGnBu: chroma.scale(['#ffffd9', '#edf8b1', '#c7e9b4', '#7fcdbb', '#41b6c4', '#1d91c0', '#225ea8', '#0c2c84']).mode('lab').colors(256),
-      BuGn: chroma.scale(['#f7fcfd', '#e0f3db', '#ccebc5', '#a8ddb5', '#7bccc4', '#4eb3d3', '#2b8cbe', '#08589e']).mode('lab').colors(256),
-      Spectral: chroma.scale(['#9e0142', '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd', '#5e4fa2']).mode('lab').colors(256)
-    };
+    container.innerHTML = '';
+    errorMessage.style.display = 'none';
 
-    Object.entries(colormaps).forEach(([name, scale]) => {
-      const label = document.createElement("div");
-      label.innerText = name;
-      label.style.marginBottom = "5px";
-      label.style.fontWeight = "bold";
+    if (typeof chroma === 'undefined') {
+      console.error('Tab 4: Chroma.js is not loaded.');
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = 'Error: Chroma.js library is not loaded.';
+      return;
+    }
 
-      const bar = document.createElement("div");
-      bar.style.display = "flex";
-      bar.style.marginBottom = "15px";
-      bar.style.border = "1px solid #ccc";
-      bar.style.height = "30px";
+    Object.entries(customMaps).forEach(([name, colors]) => {
+      try {
+        console.log(`Tab 4: Rendering gradient for ${name}`);
+        const label = document.createElement('div');
+        label.innerText = name;
+        label.className = 'gradient-label';
 
-      scale.forEach(hex => {
-        const segment = document.createElement("div");
-        segment.style.width = "0.4%";
-        segment.style.backgroundColor = hex;
-        bar.appendChild(segment);
-      });
+        const bar = document.createElement('div');
+        bar.className = 'gradient-bar';
+        const gradientColors = chroma.scale(colors).mode('lab').colors(20); // Interpolate for smoother gradient
+        bar.style.background = `linear-gradient(to right, ${gradientColors.join(', ')})`;
 
-      container.appendChild(label);
-      container.appendChild(bar);
+        container.appendChild(label);
+        container.appendChild(bar);
+      } catch (error) {
+        console.error(`Tab 4: Failed to render gradient for ${name}:`, error);
+        errorMessage.style.display = 'block';
+        errorMessage.innerText = `Error rendering gradient for ${name}.`;
+      }
     });
+    console.log('Tab 4: renderGradientGallery completed');
   }
 </script>
+  
 
+  <!-- Tab 5: Copilot Color Questions -->
+<div id="copilot" class="tab">
+  <h2>Copilot Color Questions</h2>
+  <div class="input-container">
+    <label for="copilotPrompt">Enter a color question or theme (e.g., "Create a palette for a sunset"):</label>
+    <input type="text" id="copilotPrompt" placeholder="e.g., Create a palette for a sunset" style="width: 300px;">
+    <button onclick="queryCopilot()">Generate Palette</button>
+  </div>
+  <p class="help-text">
+    Ask Copilot for color palettes or color-related questions. Results are displayed as swatches and Python-compatible lists.
+  </p>
+  <div id="copilotSwatches" style="display: flex; flex-wrap: wrap;"></div>
+  <h3>Generated Palette</h3>
+  <div id="copilotPreview" style="margin-top: 20px;"></div>
+  <h3>Python-Compatible Lists</h3>
+  <div id="copilotLists" style="margin-top: 20px; font-family: monospace;"></div>
+  <div id="copilotError" style="color: red; margin-top: 10px; display: none;"></div>
+</div>
 
+<style>
+  .copilot-swatch {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 10px;
+  }
+  .copilot-gradient {
+    width: 200px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 5px 0;
+  }
+  #copilotLists {
+    white-space: pre-wrap;
+    font-size: 0.9em;
+  }
+</style>
 
+<script>
+  function queryCopilot() {
+    console.log('Tab 5: Starting queryCopilot');
+    const prompt = document.getElementById('copilotPrompt').value.trim();
+    const swatchArea = document.getElementById('copilotSwatches');
+    const previewArea = document.getElementById('copilotPreview');
+    const listArea = document.getElementById('copilotLists');
+    const errorMessage = document.getElementById('copilotError');
+    swatchArea.innerHTML = '';
+    previewArea.innerHTML = '';
+    listArea.innerHTML = '';
+    errorMessage.style.display = 'none';
+
+    if (!prompt) {
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = 'Please enter a color question or theme.';
+      return;
+    }
+
+    if (typeof chroma === 'undefined') {
+      console.error('Tab 5: Chroma.js is not loaded.');
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = 'Error: Chroma.js library is not loaded.';
+      return;
+    }
+
+    // Mock Copilot response (replace with actual API call)
+    let colors;
+    try {
+      // Simulate Copilot response for testing (based on)[](https://learn.microsoft.com/en-us/power-pages/getting-started/theme-copilot)
+      const mockResponses = {
+        'create a palette for a sunset': ['#ff4500', '#ff6347', '#ffa500', '#ffd700', '#ff69b4'],
+        'what colors match #ff5733': ['#ff5733', '#33aaff', '#33ffaa', '#ffaa33', '#aa33ff'],
+        'palette for a forest theme': ['#228b22', '#006400', '#90ee90', '#556b2f', '#8fbc8f']
+      };
+      const response = mockResponses[prompt.toLowerCase()] || ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']; // Fallback
+      colors = response.filter(c => chroma.valid(c)); // Validate HEX codes
+      if (colors.length < 2) throw new Error('Invalid or insufficient colors in response');
+    } catch (error) {
+      console.error(`Tab 5: Error processing Copilot response for "${prompt}":`, error);
+      errorMessage.style.display = 'block';
+      errorMessage.innerText = `Failed to generate palette for "${prompt}".`;
+      return;
+    }
+
+    // Generate swatches
+    const hexList = [];
+    const rgbaList = [];
+    colors.forEach(hex => {
+      const rgb = chroma(hex).rgba();
+      const roundedRGB = `rgba(${rgb.map((v, i) => i < 3 ? Math.round(v) : v.toFixed(2)).join(', ')})`;
+      hexList.push(`'${hex}'`);
+      rgbaList.push(`(${rgb.map((v, i) => i < 3 ? Math.round(v) : v.toFixed(2)).join(', ')})`);
+
+      const wrapper = document.createElement('div');
+      wrapper.style.margin = '10px';
+      wrapper.style.textAlign = 'center';
+
+      const swatch = document.createElement('div');
+      swatch.className = 'copilot-swatch';
+      swatch.style.backgroundColor = hex;
+      wrapper.appendChild(swatch);
+
+      const label = document.createElement('div');
+      label.style.fontSize = '0.9em';
+      label.style.marginTop = '5px';
+      label.innerText = `${hex} / ${roundedRGB}`;
+      wrapper.appendChild(label);
+
+      swatchArea.appendChild(wrapper);
+    });
+
+    // Generate gradient preview
+    const gradientColors = chroma.scale(colors).mode('lab').colors(20);
+    const gradientDiv = document.createElement('div');
+    gradientDiv.className = 'copilot-gradient';
+    gradientDiv.style.background = `linear-gradient(to right, ${gradientColors.join(', ')})`;
+    previewArea.appendChild(gradientDiv);
+
+    const previewLabel = document.createElement('div');
+    previewLabel.style.fontSize = '0.9em';
+    previewLabel.style.marginTop = '5px';
+    previewLabel.innerText = `Palette for "${prompt}"`;
+    previewArea.appendChild(previewLabel);
+
+    // Generate Python-compatible lists
+    listArea.innerHTML = `HEX colors = [${hexList.join(', ')}]\nRGBA colors = [${rgbaList.join(', ')}]`;
+    console.log('Tab 5: queryCopilot completed');
+  }
+</script>
+  
 </body>
 </html>
+
