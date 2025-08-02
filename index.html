@@ -12,14 +12,22 @@
   .swatch { width: 100px; height: 100px; margin: 10px; display: inline-block; border: 1px solid #333; }
   .input-container { margin-bottom: 15px; }
   .help-text { font-size: 0.9em; color: #666; }
-
-  /* Specific override for Tab 4 (gallery) help text */
-  #gallery .help-text {
-    margin-bottom: 10px;
-  }
 </style>
 
 </head>
+  <script>
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    const target = document.getElementById(tabId);
+    if (target) {
+      target.classList.add('active');
+    }
+  }
+</script>
+
 <body>
 
   <h1>🎨 Color Tools App</h1>
